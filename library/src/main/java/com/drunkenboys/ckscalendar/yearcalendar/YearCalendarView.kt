@@ -90,6 +90,7 @@ class YearCalendarView
             Modifier
                 .layoutId(day.date.toString())
                 .border(clickedEdge(day))
+                .wrapContentWidth()
                 .clickable(onClick = {
                     if (clickedDay != day) onDateClickListener
                     else onDateSecondClickListener
@@ -159,18 +160,19 @@ class YearCalendarView
         weeks.forEach { week ->
             // 1주일
             // 연 표시
-            ConstraintLayout(
-                constraintSet = dayOfWeekConstraints(week.map { day -> day.date.toString() }),
-                modifier = Modifier.fillMaxWidth()
-            ) {
+            if (isFirstWeek(week, month.id)) {
+                AnimatedMonthHeader(
+                    listState = listState,
+                    month = month.id
+                )
+            }
+
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceEvenly
+            ){
                 weekSchedules = Array(7) { Array(design.visibleScheduleCount) { null } }
                 // 월 표시
-                if (isFirstWeek(week, month.id)) {
-                    AnimatedMonthHeader(
-                        listState = listState,
-                        month = month.id
-                    )
-                }
                 week.forEach { day ->
                     when (day.dayType) {
                         // 빈 날짜
@@ -273,9 +275,9 @@ class YearCalendarView
         weekScheduleList[weekNum].forEach { schedule ->
             val modifier =
                 if (schedule != null) Modifier
-                    .fillMaxWidth()
+                    .wrapContentWidth()
                     .background(color = Color(schedule.color))
-                else Modifier.fillMaxWidth()
+                else Modifier.wrapContentWidth()
 
             Text(
                 text = scheduleText(schedule),
@@ -324,25 +326,6 @@ class YearCalendarView
 
         // (월 달력 12개 + 년 헤더 1개) + 이번달
         return (today.year - INIT_YEAR) * 13 + today.monthValue
-    }
-
-    private fun dayOfWeekConstraints(weekIds: List<String>) = ConstraintSet {
-        val week = weekIds.map { id ->
-            createRefFor(id)
-        }
-
-        week.forEachIndexed { i, ref ->
-            constrain(ref) {
-                width = Dimension.fillToConstraints
-                top.linkTo(parent.top)
-
-                if (i != 0) start.linkTo(week[i - 1].end)
-                else start.linkTo(parent.start)
-
-                if (i != week.size - 1) end.linkTo(week[i + 1].start)
-                else end.linkTo(parent.end)
-            }
-        }
     }
 
     fun setOnDateClickListener(onDateClickListener: OnDayClickListener) {
