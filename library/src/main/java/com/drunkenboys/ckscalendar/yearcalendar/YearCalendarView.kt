@@ -21,13 +21,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.layoutId
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import androidx.constraintlayout.compose.ConstraintLayout
-import androidx.constraintlayout.compose.ConstraintSet
-import androidx.constraintlayout.compose.Dimension
 import com.drunkenboys.ckscalendar.databinding.LayoutYearCalendarBinding
 import com.drunkenboys.ckscalendar.FakeFactory
 import com.drunkenboys.ckscalendar.data.*
@@ -88,7 +84,6 @@ class YearCalendarView
 
         val dayColumnModifier = { day: CalendarDate ->
             Modifier
-                .layoutId(day.date.toString())
                 .border(clickedEdge(day))
                 .wrapContentWidth()
                 .clickable(onClick = {
@@ -236,7 +231,6 @@ class YearCalendarView
         Text(
             text = "${day.date.dayOfMonth}",
             color = color,
-            modifier = Modifier.layoutId(day.date.toString()),
             textAlign = align,
             fontSize = design.textSize.dp()
         )
@@ -247,7 +241,6 @@ class YearCalendarView
         Text(
             text = "${day.date.dayOfMonth}",
             modifier = Modifier
-                .layoutId(day.date.toString())
                 .alpha(0f),
             textAlign = TextAlign.Center,
             fontSize = design.textSize.dp()
